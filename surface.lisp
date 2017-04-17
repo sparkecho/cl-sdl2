@@ -9,7 +9,7 @@
 (defconstant SDL-DONTFREE  #x00000004) ; Surface is referenced internally
 
 
-(defcstruct %sdl-surface
+(defcstructype sdl-surface
   (flags :uint32)      ; Read-only
   (format :pointer)    ; Read-only  (SDL_PixelFormat *)
   (w :int)             ; Read-only
@@ -27,8 +27,6 @@
   (map :pointer)       ;Private (struct SDL_BlitMap *)  (:pointer (:struct sdl-blit-map))
   ;; Reference count -- used when freeing surface
   (refcount :int))                      ; Read-mostly
-
-(defctype sdl-surface (:struct %sdl-surface))
 
 
 (defcfun ("SDL_FreeSurface" sdl-free-surface) :void
