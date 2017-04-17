@@ -14,6 +14,7 @@
 
                (:file "pixels")
                (:file "rect")
+               (:file "rwops")
                (:file "surface")
                (:file "video")
 
