@@ -41,13 +41,24 @@
 
 
 
-(defcfun ("SDL_CreateWindow" sdl-create-window) :pointer
-  (title :string)
-  (x :int)
-  (y :int)
-  (w :int)
-  (h :int)
-  (flags :uint32))
+;; Argument flags is enum type, so foreign-funcall is used
+(defun sdl-create-window (title x y w h flags)
+  (foreign-funcall "SDL_CreateWindow"
+                   :string title
+                   :int x
+                   :int y
+                   :int w
+                   :int h
+                   sdl-window-flags flags
+                   :pointer))
+
+;; (defcfun ("SDL_CreateWindow" sdl-create-window) :pointer
+;;   (title :string)
+;;   (x :int)
+;;   (y :int)
+;;   (w :int)
+;;   (h :int)
+;;   (flags :uint32))
 
 
 (defcfun ("SDL_GetWindowSurface" sdl-get-window-surface) :pointer
