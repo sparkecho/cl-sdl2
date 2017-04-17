@@ -16,3 +16,21 @@
       `(progn
          (defcstruct ,%name ,@options ,@fields)
          (defctype ,name (:struct ,%name))))))
+
+
+;; Combine the `defcunion' and `defctype'
+;; Bind ffi of C program definitions like below
+;; typedef union union-name
+;; {
+;;     type slot-name;
+;; } union-name;
+(defmacro defcuniontype (name-and-options &body fields)
+  (destructuring-bind (name &key size)
+      (cffi::ensure-list name-and-options)
+    (let ((%name (intern (concatenate 'string "%" (symbol-name name))))
+          (options (if (null size)
+                       nil
+                       `(:size ,size))))
+      `(progn
+         (defcunion ,%name ,@options ,@fields)
+         (defctype ,name (:union ,%name))))))
