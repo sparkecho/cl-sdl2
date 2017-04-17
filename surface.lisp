@@ -3,7 +3,13 @@
 
 (in-package #:cl-sdl2)
 
-(defcstruct sdl-surface
+(defconstant SDL-SWSURFACE 0)          ; Just here for compatibility
+(defconstant SDL-PREALLOC  #x00000001) ; Surface uses preallocated memory
+(defconstant SDL-RLEACCEL  #x00000002) ; Surface is RLE encoded
+(defconstant SDL-DONTFREE  #x00000004) ; Surface is referenced internally
+
+
+(defcstruct %sdl-surface
   (flags :uint32)      ; Read-only
   (format :pointer)    ; Read-only  (SDL_PixelFormat *)
   (w :int)             ; Read-only
@@ -16,11 +22,13 @@
   (locked :int)        ; Read-only
   (lock-data :pointer) ; Read-only
   ;; clipping information
-  (clip-rect (:struct sdl-rect))        ;Read-only
+  (clip-rect sdl-rect) ;Read-only
   ;; info for fast blit mapping to other surfaces
   (map :pointer)       ;Private (struct SDL_BlitMap *)  (:pointer (:struct sdl-blit-map))
   ;; Reference count -- used when freeing surface
   (refcount :int))                      ; Read-mostly
+
+(defctype sdl-surface (:struct %sdl-surface))
 
 
 (defcfun ("SDL_FreeSurface" sdl-free-surface) :void
