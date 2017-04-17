@@ -28,7 +28,7 @@
 
 
 ;SDL_Surface *
-(defcfun ("SDL_LoadBMP_RW" sdl-load-bmp-rw) :pointer 
+(defcfun ("SDL_LoadBMP_RW" sdl-load-bmp-rw) :pointer
   (src :pointer)                        ;SDL_RWops *
   (freesrc :int))
 
