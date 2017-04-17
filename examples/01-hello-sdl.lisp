@@ -13,7 +13,7 @@
                                              SDL-WINDOWPOS-UNDEFINED
                                              screen-width
                                              screen-height
-                                             (foreign-enum-value 'sdl-window-flags :SDL-WINDOW-SHOWN)))
+                                             :SDL-WINDOW-SHOWN))
              (cond ((null-pointer-p window)
                     (format t "Window could not be created! sdl-error: ~A~%" (sdl-get-error)))
                    (t (setf screen-surface (sdl-get-window-surface window))
