@@ -7,6 +7,7 @@
   :depends-on (#:cffi)
   :serial t
   :components ((:file "package")
+               (:file "utils")
 
                (:file "error")
 
@@ -17,6 +18,8 @@
                (:file "rwops")
                (:file "surface")
                (:file "video")
+
+               (:file "events")
 
                (:file "sdl")
                (:file "cl-sdl2")))
