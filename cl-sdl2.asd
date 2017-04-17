@@ -8,6 +8,8 @@
   :serial t
   :components ((:file "package")
 
+               (:file "error")
+
                (:file "timer")
 
                (:file "pixels")

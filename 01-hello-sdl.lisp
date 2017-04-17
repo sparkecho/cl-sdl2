@@ -7,7 +7,7 @@
         (screen-width 640)
         (screen-height 480))
     (cond ((< (sdl-init SDL-INIT-VIDEO) 0)
-           (format t "SDL could not initialize!"))
+           (format t "SDL could not initialize! sdl-error: ~A~%" (sdl-get-error)))
           (t (setf window (sdl-create-window "SDL Tutorial"
                                              SDL-WINDOWPOS-UNDEFINED
                                              SDL-WINDOWPOS-UNDEFINED
@@ -15,7 +15,7 @@
                                              screen-height
                                              (foreign-enum-value 'sdl-window-flags :SDL-WINDOW-SHOWN)))
              (cond ((pointer-eq window (null-pointer))
-                    (format t "Window could not be created!"))
+                    (format t "Window could not be created! sdl-error: ~A~%" (sdl-get-error)))
                    (t (setf screen-surface (sdl-get-window-surface window))
                       (sdl-fill-rect screen-surface
                                      (null-pointer)
