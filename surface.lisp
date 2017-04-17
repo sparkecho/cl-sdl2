@@ -23,6 +23,20 @@
   (refcount :int))                      ; Read-mostly
 
 
+(defcfun ("SDL_FreeSurface" sdl-free-surface) :void
+  (surface :pointer))                   ;(SDL_Surface *)
+
+
+;SDL_Surface *
+(defcfun ("SDL_LoadBMP_RW" sdl-load-bmp-rw) :pointer 
+  (src :pointer)                        ;SDL_RWops *
+  (freesrc :int))
+
+;; #define SDL_LoadBMP(file)   SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
+(defun sdl-load-bmp (file)
+  (sdl-load-bmp-rw (sdl-rw-from-file file "rb") 1))
+
+
 (defcfun ("SDL_FillRect" sdl-fill-rect) :int
   (dst :pointer)                        ;(SDL_Surface *)
   (rect :pointer)                       ;(const SDL_Rect *)
@@ -34,3 +48,21 @@
   (rects :pointer)                      ;(const SDL_Rect *)
   (count :int)
   (color :uint32))
+
+
+
+(defcfun ("SDL_UpperBlit" sdl-upper-blit) :int
+  (src :pointer)                        ; (SDL_Surface *)
+  (srcrect :pointer)                    ; (const SDL_Rect *)
+  (dst :pointer)                        ; (SDL_Surface *)
+  (dstrect :pointer))                   ; (SDL_Rect *)
+
+;; #define SDL_BlitSurface SDL_UpperBlit
+(defun sdl-blit-surface (src srcrect dst dstrect)
+  (sdl-upper-blit src srcrect dst dstrect))
+
+(defcfun ("SDL_LowerBlit" sdl-lower-blit) :int
+  (src :pointer)                        ; (SDL_Surface *)
+  (srcrect :pointer)                    ; (const SDL_Rect *)
+  (dst :pointer)                        ; (SDL_Surface *)
+  (dstrect :pointer))                   ; (SDL_Rect *)
