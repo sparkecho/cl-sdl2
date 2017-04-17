@@ -14,7 +14,7 @@
                                              screen-width
                                              screen-height
                                              (foreign-enum-value 'sdl-window-flags :SDL-WINDOW-SHOWN)))
-             (cond ((pointer-eq window (null-pointer))
+             (cond ((null-pointer-p window)
                     (format t "Window could not be created! sdl-error: ~A~%" (sdl-get-error)))
                    (t (setf screen-surface (sdl-get-window-surface window))
                       (sdl-fill-rect screen-surface
