@@ -18,7 +18,7 @@
           (t (setf *window* (sdl-create-window "SDL Tutorial"
                                                SDL-WINDOWPOS-UNDEFINED SDL-WINDOWPOS-UNDEFINED
                                                +screen-width+ +screen-height+
-                                               (foreign-enum-value 'sdl-window-flags :SDL-WINDOW-SHOWN)))
+                                               :SDL-WINDOW-SHOWN))
              (cond ((null-pointer-p *window*)
                     (format t "Window could not be created! SDL_Error: ~A~%" (sdl-get-error))
                     (setf success nil))
