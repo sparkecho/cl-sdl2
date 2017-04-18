@@ -21,88 +21,88 @@
 
 
 (defcenum sdl-event-type
-  (:SDL_FIRSTEVENT     0)             ; Unused (do not remove)
+  (:SDL-FIRST-EVENT     0)              ; Unused (do not remove)
   ;; Application events
-  (:SDL_QUIT           #x100)         ; User-requested quit
+  (:SDL-QUIT        #x100)              ; User-requested quit
   ;; These application events have special meaning on iOS, see README-ios.txt for details
-  (:SDL_APP_TERMINATING) ; The application is being terminated by the OS
+  (:SDL-APP-TERMINATING) ; The application is being terminated by the OS
                                         ; Called on iOS in applicationWillTerminate()
                                         ; Called on Android in onDestroy()
-  (:SDL_APP_LOWMEMORY) ; The application is low on memory, free memory if possible.
+  (:SDL-APP-LOW-MEMORY) ; The application is low on memory, free memory if possible.
                                         ; Called on iOS in applicationDidReceiveMemoryWarning()
                                         ; Called on Android in onLowMemory()
-  (:SDL_APP_WILLENTERBACKGROUND) ;The application is about to enter the background
+  (:SDL-APP-WILL-ENTER-BACKGROUND) ;The application is about to enter the background
                                         ;Called on iOS in applicationWillResignActive()
                                         ; Called on Android in onPause()
-  (:SDL_APP_DIDENTERBACKGROUND) ; The application did enter the background and may not get CPU for some time
+  (:SDL-APP-DID-ENTER-BACKGROUND) ; The application did enter the background and may not get CPU for some time
                                         ; Called on iOS in applicationDidEnterBackground()
                                         ; Called on Android in onPause()
 
-  (:SDL_APP_WILLENTERFOREGROUND) ; The application is about to enter the foreground
+  (:SDL-APP-WILL-ENTER-FOREGROUND) ; The application is about to enter the foreground
                                         ; Called on iOS in applicationWillEnterForeground()
                                         ; Called on Android in onResume()
 
-  (:SDL_APP_DIDENTERFOREGROUND) ; The application is now interactive
+  (:SDL-APP-DID-ENTER-FOREGROUND) ; The application is now interactive
                                         ; Called on iOS in applicationDidBecomeActive()
                                         ; Called on Android in onResume()
   ;; Window events
-  (:SDL_WINDOWEVENT    #x200)         ; Window state change
-  (:SDL_SYSWMEVENT)                   ; System specific event
+  (:SDL-WINDOW-EVENT    #x200)         ; Window state change
+  (:SDL-SYS-WM-EVENT)                  ; System specific event
 
   ;; Keyboard events
-  (:SDL_KEYDOWN        #x300)  ; Key pressed
-  (:SDL_KEYUP)                 ; Key released
-  (:SDL_TEXTEDITING)           ; Keyboard text editing (composition)
-  (:SDL_TEXTINPUT)             ; Keyboard text input
+  (:SDL-KEYDOWN        #x300)  ; Key pressed
+  (:SDL-KEYUP)                 ; Key released
+  (:SDL-TEXT-EDITING)          ; Keyboard text editing (composition)
+  (:SDL-TEXT-INPUT)            ; Keyboard text input
 
   ;; Mouse events
-  (:SDL_MOUSEMOTION    #x400)         ; Mouse moved
-  (:SDL_MOUSEBUTTONDOWN)              ; Mouse button pressed
-  (:SDL_MOUSEBUTTONUP)                ; Mouse button released
-  (:SDL_MOUSEWHEEL)                   ; Mouse wheel motion
+  (:SDL-MOUSE-MOTION    #x400)          ; Mouse moved
+  (:SDL-MOUSE-BUTTON-DOWN)              ; Mouse button pressed
+  (:SDL-MOUSE-BUTTON-UP)                ; Mouse button released
+  (:SDL-MOUSE-WHEEL)                    ; Mouse wheel motion
 
   ;; Joystick events
-  (:SDL_JOYAXISMOTION  #x600)         ; Joystick axis motion
-  (:SDL_JOYBALLMOTION)                ; Joystick trackball motion
-  (:SDL_JOYHATMOTION)                 ; Joystick hat position change
-  (:SDL_JOYBUTTONDOWN)                ; Joystick button pressed
-  (:SDL_JOYBUTTONUP)                  ; Joystick button released
-  (:SDL_JOYDEVICEADDED)               ; A new joystick has been inserted into the system
-  (:SDL_JOYDEVICEREMOVED)             ; An opened joystick has been removed
+  (:SDL-JOY-AXIS-MOTION  #x600)         ; Joystick axis motion
+  (:SDL-JOY-BALL-MOTION)                ; Joystick trackball motion
+  (:SDL-JOY-HAT-MOTION)                 ; Joystick hat position change
+  (:SDL-JOY-BUTTON-DOWN)                ; Joystick button pressed
+  (:SDL-JOY-BUTTON-UP)                  ; Joystick button released
+  (:SDL-JOY-DEVICE-ADDED)               ; A new joystick has been inserted into the system
+  (:SDL-JOY-DEVICE-REMOVED)             ; An opened joystick has been removed
 
   ;; Game controller events
-  (:SDL_CONTROLLERAXISMOTION  #x650)  ; Game controller axis motion
-  (:SDL_CONTROLLERBUTTONDOWN)      ; Game controller button pressed
-  (:SDL_CONTROLLERBUTTONUP)        ; Game controller button released
-  (:SDL_CONTROLLERDEVICEADDED) ; A new Game controller has been inserted into the system
-  (:SDL_CONTROLLERDEVICEREMOVED) ; An opened Game controller has been removed
-  (:SDL_CONTROLLERDEVICEREMAPPED) ; The controller mapping was updated
+  (:SDL-CONTROLLER-AXIS-MOTION  #x650)  ; Game controller axis motion
+  (:SDL-CONTROLLER-BUTTON-DOWN)      ; Game controller button pressed
+  (:SDL-CONTROLLER-BUTTON-UP)        ; Game controller button released
+  (:SDL-CONTROLLER-DEVICE-ADDED) ; A new Game controller has been inserted into the system
+  (:SDL-CONTROLLER-DEVICE-REMOVED) ; An opened Game controller has been removed
+  (:SDL-CONTROLLER-DEVICE-REMAPPED) ; The controller mapping was updated
 
   ;; Touch events
-  (:SDL_FINGERDOWN      #x700)
-  (:SDL_FINGERUP)
-  (:SDL_FINGERMOTION)
+  (:SDL-FINGER-DOWN      #x700)
+  (:SDL-FINGER-UP)
+  (:SDL-FINGER-MOTION)
 
   ;; Gesture events
-  (:SDL_DOLLARGESTURE   #x800)
-  (:SDL_DOLLARRECORD)
-  (:SDL_MULTIGESTURE)
+  (:SDL-DOLLAR-GESTURE   #x800)
+  (:SDL-DOLLAR-RECORD)
+  (:SDL-MULTI-GESTURE)
 
   ;; Clipboard events
-  (:SDL_CLIPBOARDUPDATE #x900)        ; The clipboard changed
+  (:SDL-CLIPBOARD-UPDATE #x900)         ; The clipboard changed
 
   ;; Drag and drop events
-  (:SDL_DROPFILE        #x1000)    ; The system requests a file open
+  (:SDL-DROP-FILE        #x1000)     ; The system requests a file open
 
   ;; Render events
-  (:SDL_RENDER_TARGETS_RESET #x2000) ; The render targets have been reset
+  (:SDL-RENDER-TARGETS-RESET #x2000) ; The render targets have been reset
 
-  ;; Events ::SDL_USEREVENT through ::SDL_LASTEVENT are for your use,
+  ;; Events ::SDL-USEREVENT through ::SDL_LASTEVENT are for your use,
   ;; and should be allocated with SDL_RegisterEvents()
-  (:SDL_USEREVENT    #x8000)
+  (:SDL-USER-EVENT    #x8000)
 
   ;; This last event is only for bounding internal arrays
-  (:SDL_LASTEVENT    #xFFFF))
+  (:SDL-LAST-EVENT    #xFFFF))
 
 
 ;; Fields shared by every event
