@@ -19,7 +19,7 @@
                    (t (setf screen-surface (sdl-get-window-surface window))
                       (sdl-fill-rect screen-surface
                                      (null-pointer)
-                                     (sdl-map-rgb (foreign-slot-value screen-surface 'sdl-surface 'format) #xFF #xFF #xFF))
+                                     (sdl-map-rgb (sdl-surface-format screen-surface) #xFF #xFF #xFF))
                       (sdl-update-window-surface window)
                       (sdl-delay 2000)))))
     (sdl-destroy-window window)
