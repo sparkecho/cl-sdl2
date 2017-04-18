@@ -48,7 +48,7 @@
                        nil
                        `(:size ,size))))
       `(progn
-         (defcunion ,%name ,@options ,@fields)
+         (defcunion (,%name ,@options) ,@fields)
          (defctype ,name (:union ,%name))))))
 
 
