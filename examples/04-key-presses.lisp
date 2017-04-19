@@ -128,15 +128,12 @@
                             (cond ((= (sdl-event-type e) SDL-QUIT) (setf quit t))
                                   ((= (sdl-event-type e) SDL-KEY-DOWN)
                                    (let ((pressed-key (sdl-keysym-sym (sdl-keyboard-event-keysym (sdl-event-key e)))))
-                                     (cond ((= pressed-key SDLK-UP)
-                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-up)))
-                                           ((= pressed-key SDLK-DOWN)
-                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-down)))
-                                           ((= pressed-key SDLK-LEFT)
-                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-left)))
-                                           ((= pressed-key SDLK-RIGHT)
-                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-right)))
-                                           (t (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))))))))
+                                     (case pressed-key
+                                       (#.SDLK-UP   (setf *current-surface* (aref *key-press-surfaces* key-press-surface-up)))
+                                       (#.SDLK-DOWN (setf *current-surface* (aref *key-press-surfaces* key-press-surface-down)))
+                                       (#.SDLK-LEFT (setf *current-surface* (aref *key-press-surfaces* key-press-surface-left)))
+                                       (#.SDLK-RIGHT (setf *current-surface* (aref *key-press-surfaces* key-press-surface-right)))
+                                       (otherwise   (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))))))))
                           ;; Apply the current image
                           (sdl-blit-surface *current-surface* (null-pointer) *screen-surface* (null-pointer))
                           ;; Update the surface
