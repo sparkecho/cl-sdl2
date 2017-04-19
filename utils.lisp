@@ -3,6 +3,7 @@
 
 (in-package #:cl-sdl2)
 
+
 ;; Combine the `defcstruct' and `defctype'
 ;; Bind ffi of C program definitions like below
 ;; typedef struct struct-name
@@ -18,20 +19,9 @@
       `(eval-when (:compile-toplevel :load-toplevel :execute)
          (defcstruct (,%name ,@options) ,@fields)
          (defctype ,name (:struct ,%name))
-         ,@(generate-struct-accessors %name conc-name
+         ,@(generate-slot-accessors name conc-name
                                       (mapcar #'car fields))
-         ',name))))         
-
-
-(defun generate-struct-accessors (name conc-name slot-names)
-  (loop with pointer-arg = (symbol-combine '#:pointer-to- name)
-        for slot in slot-names
-        for accessor = (symbol-combine conc-name slot)
-        collect `(defun ,accessor (,pointer-arg)
-                   (foreign-slot-value ,pointer-arg '(:struct ,name) ',slot))
-        collect `(defun (setf ,accessor) (value ,pointer-arg)
-                   (setf (foreign-slot-value ,pointer-arg '(:struct ,name) ',slot) value))))
-
+         ',name))))
 
 
 ;; Combine the `defcunion' and `defctype'
@@ -46,10 +36,25 @@
     (let ((%name (symbol-combine '% name))
           (options (if (null size)
                        nil
-                       `(:size ,size))))
-      `(progn
+                       `(:size ,size)))
+          (conc-name (symbol-combine name '-)))
+      `(eval-when (:compile-toplevel :load-toplevel :execute)
          (defcunion (,%name ,@options) ,@fields)
-         (defctype ,name (:union ,%name))))))
+         (defctype ,name (:union ,%name))
+         ,@(generate-slot-accessors name conc-name
+                                      (mapcar #'car fields))
+         ',name))))
+
+;; Generate slot accessors for slots in `slot-names' of the given `type'
+;; The accessor name will be `conc-name' prefixed and slot-name following
+(defun generate-slot-accessors (type conc-name slot-names)
+  (loop with pointer-arg = (symbol-combine '#:pointer-to- type)
+        for slot in slot-names
+        for accessor = (symbol-combine conc-name slot)
+        collect `(defun ,accessor (,pointer-arg)
+                   (foreign-slot-value ,pointer-arg ',type ',slot))
+        collect `(defun (setf ,accessor) (value ,pointer-arg)
+                   (setf (foreign-slot-value ,pointer-arg ',type ',slot) value))))
 
 
 ;; Get a symbol whose name is the concatenate of each symbol's name in `symbols'.
