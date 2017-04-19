@@ -61,14 +61,18 @@
   (cond ((null (init)) (format t "Failed to initialize!~%"))
         (t (cond ((null (load-media)) (format t "Failed to load media!~%"))
                  ;; ;;Apply the image
-                 (t (let ((quit nil)
-                          (e (foreign-alloc 'sdl-event)))
-                      (while (not quit)
-                        (while (not (zerop (sdl-poll-event e)))
-                          (when (= (sdl-event-type e) SDL-QUIT)
-                            (setf quit t)))
-
-                        (sdl-blit-surface *x-out* (null-pointer) *screen-surface* (null-pointer))
-                        ;; Update the surface
-                        (sdl-update-window-surface *window*)))))))
+                 (t (let ((quit nil))
+                      ;; Event handler
+                      (with-foreign-object (e 'sdl-event)
+                        ;; While application is running
+                        (while (not quit)
+                          ;; Handle events on queue
+                          (while (not (zerop (sdl-poll-event e)))
+                            ;; User requests quit
+                            (when (= (sdl-event-type e) SDL-QUIT)
+                              (setf quit t)))
+                          ;; Apply the image
+                          (sdl-blit-surface *x-out* (null-pointer) *screen-surface* (null-pointer))
+                          ;; Update the surface
+                          (sdl-update-window-surface *window*))))))))
   (close-all))
