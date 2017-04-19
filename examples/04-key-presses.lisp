@@ -6,9 +6,19 @@
 (defconstant +screen-width+ 640)
 (defconstant +screen-height+ 480)
 
+(defcenum key-press-surfaces
+  (key-press-surface-default)
+  (key-press-surface-up)
+  (key-press-surface-down)
+  (key-press-surface-left)
+  (key-press-surface-right)
+  (key-press-surface-total))
+
 (defparameter *window* (null-pointer))
 (defparameter *screen-surface* (null-pointer))
-(defparameter *x-out* (null-pointer))
+(defparameter *key-press-surfaces*
+  (make-array key-press-surface-total :initial-element (null-pointer)))
+(defparameter *current-surface* (null-pointer))
 
 
 ;; while loop
@@ -35,21 +45,64 @@
     success))
 
 
+(defun load-surface (path)
+  (let ((loaded-surface (sdl-load-bmp path)))
+    (when (null-pointer-p loaded-surface)
+      (format t "Unable to load image ~S! SDL Error: ~S~%" path (sdl-get-error)))
+    loaded-surface))
+
+
+(defun cats (&rest strings)
+  (apply #'concatenate 'string strings))
+
+
 (defun load-media ()
-  (let ((success t)
-        (full-path (namestring (merge-pathnames "examples/x.bmp" (asdf:system-source-directory :cl-sdl2)))))
-    (setf *x-out* (sdl-load-bmp full-path))
-    (when (null-pointer-p *x-out*)
-      (format t "Unable to load image ~S! SDL Error: ~A~%" "x.bmp" (sdl-get-error))
+  (let ((success t)                     ;Loading success flag
+        (full-path (namestring (merge-pathnames "examples/" (asdf:system-source-directory :cl-sdl2)))))
+    ;; Load default surface
+    (setf (aref *key-press-surfaces* key-press-surface-default)
+          (load-surface (cats full-path "press.bmp")))
+    (when (null-pointer-p (aref *key-press-surfaces* key-press-surface-default))
+      (format t "Failed to load default image!~%")
       (setf success nil))
+
+    ;; Load up surface
+    (setf (aref *key-press-surfaces* key-press-surface-up)
+          (load-surface (cats full-path "up.bmp")))
+    (when (null-pointer-p (aref *key-press-surfaces* key-press-surface-up))
+      (format t "Failed to load up image!~%")
+      (setf success nil))
+
+    ;; Load down surface
+    (setf (aref *key-press-surfaces* key-press-surface-down)
+          (load-surface (cats full-path "down.bmp")))
+    (when (null-pointer-p (aref *key-press-surfaces* key-press-surface-down))
+      (format t "Failed to load down image!~%")
+      (setf success nil))
+
+    ;; Load left surface
+    (setf (aref *key-press-surfaces* key-press-surface-left)
+          (load-surface (cats full-path "left.bmp")))
+    (when (null-pointer-p (aref *key-press-surfaces* key-press-surface-left))
+      (format t "Failed to load left image!~%")
+      (setf success nil))
+
+    ;; Load right surface
+    (setf (aref *key-press-surfaces* key-press-surface-right)
+          (load-surface (cats full-path "right.bmp")))
+    (when (null-pointer-p (aref *key-press-surfaces* key-press-surface-right))
+      (format t "Failed to load right image!~%")
+      (setf success nil))
+
     success))
 
 
 ;; Name `close' conflicts with lisp built-in.
 (defun close-all ()
-  ;; Deallocate surface
-  (sdl-free-surface *x-out*)
-  (setf *x-out* (null-pointer))
+  ;; Deallocate surfaces
+  (loop for i from 0 below key-press-surface-total
+       do (progn (sdl-free-surface (aref *key-press-surfaces* i))
+                 (setf (aref *key-press-surfaces* i) (null-pointer))))
   ;; Destroy window
   (sdl-destroy-window *window*)
   (setf *window* (null-pointer))
@@ -61,14 +114,31 @@
   (cond ((null (init)) (format t "Failed to initialize!~%"))
         (t (cond ((null (load-media)) (format t "Failed to load media!~%"))
                  ;; ;;Apply the image
-                 (t (let ((quit nil)
-                          (e (foreign-alloc 'sdl-event)))
-                      (while (not quit)
-                        (while (not (zerop (sdl-poll-event e)))
-                          (when (= (sdl-event-type e) SDL-QUIT)
-                            (setf quit t)))
-
-                        (sdl-blit-surface *x-out* (null-pointer) *screen-surface* (null-pointer))
-                        ;; Update the surface
-                        (sdl-update-window-surface *window*)))))))
+                 ;; (t (let ((quit nil)                      ;Main loop flag
+                 ;;          (e (foreign-alloc 'sdl-event))) ;Event handler
+                 (t (let ((quit nil))                      ;Main loop flag
+                      (with-foreign-object (e 'sdl-event)
+                        ;; Set default current surface
+                        (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))
+                        ;; While application is running
+                        (while (not quit)
+                          ;; Handle events on queue
+                          (while (not (zerop (sdl-poll-event e)))
+                            ;; User requests quit
+                            (cond ((= (sdl-event-type e) SDL-QUIT) (setf quit t))
+                                  ((= (sdl-event-type e) SDL-KEY-DOWN)
+                                   (let ((pressed-key (sdl-keysym-sym (sdl-keyboard-event-keysym (sdl-event-key e)))))
+                                     (cond ((= pressed-key SDLK-UP)
+                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-up)))
+                                           ((= pressed-key SDLK-DOWN)
+                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-down)))
+                                           ((= pressed-key SDLK-LEFT)
+                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-left)))
+                                           ((= pressed-key SDLK-RIGHT)
+                                            (setf *current-surface* (aref *key-press-surfaces* key-press-surface-right)))
+                                           (t (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))))))))
+                          ;; Apply the current image
+                          (sdl-blit-surface *current-surface* (null-pointer) *screen-surface* (null-pointer))
+                          ;; Update the surface
+                          (sdl-update-window-surface *window*))))))))
   (close-all))
