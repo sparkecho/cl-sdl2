@@ -11,6 +11,14 @@
 (defparameter *x-out* (null-pointer))
 
 
+;; while loop
+(defmacro while (test &body body)
+  `(do ()
+       ((not ,test))
+     ,@body))
+
+
+
 (defun init ()
   (let ((success t))
     (cond ((< (sdl-init SDL-INIT-VIDEO) 0)
@@ -19,7 +27,7 @@
           (t (setf *window* (sdl-create-window "SDL Tutorial"
                                                SDL-WINDOWPOS-UNDEFINED SDL-WINDOWPOS-UNDEFINED
                                                +screen-width+ +screen-height+
-                                               :SDL-WINDOW-SHOWN))
+                                               SDL-WINDOW-SHOWN))
              (cond ((null-pointer-p *window*)
                     (format t "Window could not be created! SDL_Error: ~A~%" (sdl-get-error))
                     (setf success nil))
@@ -56,22 +64,11 @@
                  (t (let ((quit nil)
                           (e (foreign-alloc 'sdl-event)))
                       (while (not quit)
-                        ;; (format t "a")
                         (while (not (zerop (sdl-poll-event e)))
-                          ;; (format t "b")
-                          (when (= (foreign-slot-value e 'sdl-event 'type)
-                                   (foreign-enum-value 'sdl-event-type :sdl-quit))
+                          (when (= (sdl-event-type e) SDL-QUIT)
                             (setf quit t)))
 
                         (sdl-blit-surface *x-out* (null-pointer) *screen-surface* (null-pointer))
                         ;; Update the surface
                         (sdl-update-window-surface *window*)))))))
   (close-all))
-
-                    
-
-;; while loop
-(defmacro while (test &body body)
-  `(do ()
-       ((not ,test))
-     ,@body))
