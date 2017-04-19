@@ -50,10 +50,10 @@
   (SDL-SYS-WM-EVENT)                  ; System specific event
 
   ;; Keyboard events
-  (SDL-KEYDOWN        #x300)  ; Key pressed
-  (SDL-KEYUP)                 ; Key released
-  (SDL-TEXT-EDITING)          ; Keyboard text editing (composition)
-  (SDL-TEXT-INPUT)            ; Keyboard text input
+  (SDL-KEY-DOWN        #x300)    ; Key pressed
+  (SDL-KEY-UP)                   ; Key released
+  (SDL-TEXT-EDITING)             ; Keyboard text editing (composition)
+  (SDL-TEXT-INPUT)               ; Keyboard text input
 
   ;; Mouse events
   (SDL-MOUSE-MOTION    #x400)          ; Mouse moved
@@ -122,7 +122,18 @@
   (padding3 :uint8)
   (data1 :int32)                        ; event dependent data
   (data2 :int32))                       ; event dependent data
-;; line 175
+
+;; Keyboard button event structure (event.key.*)
+(defcstructype sdl-keyboard-event
+  (type :uint32)                        ; ::SDL_KEYDOWN or ::SDL_KEYUP
+  (timestamp :uint32)
+  (windowID :uint32)          ; The window with keyboard focus, if any
+  (state :uint8)              ; ::SDL_PRESSED or ::SDL_RELEASED
+  (repeat :uint8)             ; Non-zero if this is a key repeat
+  (padding2 :uint8)
+  (padding3 :uint8)
+  (keysym sdl-key-sym))         ; The key that was pressed or released
+;; line 190
 
 
 ;; line 449
@@ -135,10 +146,10 @@
 
 ;; line 498
 (defcuniontype sdl-event
-    (type     :uint32)                  ; Event type, shared with all events
-    (common   sdl-common-event)         ; Common event data
-    (window   sdl-window-event)         ; Window event data
-    ;; (key      SDL-Keyboard-Event)        ; Keyboard event data
+    (type     :uint32)            ; Event type, shared with all events
+    (common   sdl-common-event)   ; Common event data
+    (window   sdl-window-event)   ; Window event data
+    (key      SDL-Keyboard-Event) ; Keyboard event data
     ;; (edit     SDL-Text-Editing-Event)     ; Text editing event data
     ;; (text     SDL-Text-Input-Event)       ; Text input event data
     ;; (motion   SDL-Mouse-Motion-Event)     ; Mouse motion event data
