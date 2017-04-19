@@ -15,13 +15,13 @@
 ;; #define SDL_InvalidParamError(param)    SDL_SetError("Parameter '%s' is invalid", (param))
 
 
-(defcenum sdl-errorcode
-  (:SDL_ENOMEM)
-  (:SDL_EFREAD)
-  (:SDL_EFWRITE)
-  (:SDL_EFSEEK)
-  (:SDL_UNSUPPORTED)
-  (:SDL_LASTERROR))
+(defcenum sdl-error-code
+  (SDL-ENOMEM)
+  (SDL-EF-READ)
+  (SDL-EF-WRITE)
+  (SDL-EF-SEEK)
+  (SDL-UNSUPPORTED)
+  (SDL-LAST-ERROR))
 
 (defcfun ("SDL_Error" sdl-error) :int
-  (code sdl-errorcode))
+  (code sdl-error-code))
