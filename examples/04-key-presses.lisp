@@ -101,8 +101,8 @@
 (defun close-all ()
   ;; Deallocate surfaces
   (loop for i from 0 below key-press-surface-total
-       do (progn (sdl-free-surface (aref *key-press-surfaces* i))
-                 (setf (aref *key-press-surfaces* i) (null-pointer))))
+     do (progn (sdl-free-surface (aref *key-press-surfaces* i))
+               (setf (aref *key-press-surfaces* i) (null-pointer))))
   ;; Destroy window
   (sdl-destroy-window *window*)
   (setf *window* (null-pointer))
@@ -117,11 +117,11 @@
                  ;; (t (let ((quit nil)                      ;Main loop flag
                  ;;          (e (foreign-alloc 'sdl-event))) ;Event handler
                  (t (let ((quit nil))                      ;Main loop flag
-                      (with-foreign-object (e 'sdl-event)
-                        ;; Set default current surface
-                        (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))
-                        ;; While application is running
-                        (while (not quit)
+                      ;; Set default current surface
+                      (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))
+                      ;; While application is running
+                      (while (not quit)
+                        (with-foreign-object (e 'sdl-event)
                           ;; Handle events on queue
                           (while (not (zerop (sdl-poll-event e)))
                             ;; User requests quit
@@ -133,9 +133,9 @@
                                        (#.SDLK-DOWN (setf *current-surface* (aref *key-press-surfaces* key-press-surface-down)))
                                        (#.SDLK-LEFT (setf *current-surface* (aref *key-press-surfaces* key-press-surface-left)))
                                        (#.SDLK-RIGHT (setf *current-surface* (aref *key-press-surfaces* key-press-surface-right)))
-                                       (otherwise   (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default))))))))
-                          ;; Apply the current image
-                          (sdl-blit-surface *current-surface* (null-pointer) *screen-surface* (null-pointer))
-                          ;; Update the surface
-                          (sdl-update-window-surface *window*))))))))
+                                       (otherwise   (setf *current-surface* (aref *key-press-surfaces* key-press-surface-default)))))))))
+                        ;; Apply the current image
+                        (sdl-blit-surface *current-surface* (null-pointer) *screen-surface* (null-pointer))
+                        ;; Update the surface
+                        (sdl-update-window-surface *window*)))))))
   (close-all))
